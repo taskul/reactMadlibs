@@ -2,9 +2,11 @@
     padding: 1rem;
 }
 
-
 .MadLibsForm input{
     display: block;
     width: auto;
 }
 
+.MadLibsForm-error {
+    color: rgb(146, 74, 74);
+}

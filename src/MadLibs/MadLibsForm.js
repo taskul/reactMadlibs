@@ -8,10 +8,20 @@ const MadLibsForm = ({createStory}) => {
         adjective: '',
         color: ''
     }
-    const [formData, setFormData ] = useState(INITIAL_STATE)
-
+    const [formData, setFormData ] = useState(INITIAL_STATE);
+    const [isInvalid, setIsInvalid] = useState(true);
+    const [isTouched, setIsTouched] = useState(false);
+    const [showError, setShowError] = useState(false);
+    
     const handleChange = (e) => {
+        setIsTouched(true)
         const {name, value} = e.target;
+        if (value === '') {
+            setIsInvalid(true)
+        } else {
+            setIsInvalid(false)
+            setShowError(false)
+        }
         setFormData(data => ({
             ...data,
             [name]: value
@@ -20,8 +30,12 @@ const MadLibsForm = ({createStory}) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        createStory(formData);
-        setFormData(INITIAL_STATE)
+        if(isTouched && !isInvalid) {
+            createStory(formData);
+            setFormData(INITIAL_STATE)
+        } else {
+            setShowError(true)
+        }
     }
 
     return (
@@ -58,6 +72,8 @@ const MadLibsForm = ({createStory}) => {
                 value={formData.color}
                 onChange={handleChange}
             />
+        {isInvalid && isTouched && <p className="MadLibsForm-error">*Fillout all of the  fields</p>}
+        {showError && <p className="MadLibsForm-error">*Fillout all of the  fields</p>}
         <button>Get Story</button>
         </form>
     )

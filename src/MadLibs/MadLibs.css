@@ -1,6 +1,9 @@
 .MadLibs {
     margin: auto;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .MadLibs-story {

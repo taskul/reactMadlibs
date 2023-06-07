@@ -1,39 +1,56 @@
 import { useState } from "react";
 import MadLibsForm from "./MadLibsForm";
-import { v4 as uuidv4 } from 'uuid';
 import './MadLibs.css'
+import Stories from "./Stories";
 
 const MadLibs = () => {
-    const [words, setWords] = useState([])
-    const [story, setStory] = useState()
+    const [baseStory, setBaseStory] = useState();
+    const [storyDisplayed, setStoryDisplayed] = useState()
     const [isShowingStory, setIsShowingStory] = useState(false)
-    const createStory = ({noun, noun2, adjective, color}) => {
+    const createStory = (wordData) => {
+        const wordValues = Object.values(wordData);
+        const wordKeys = Object.keys(wordData)
+        let newStory = baseStory;
+        const mappedStory = wordKeys.map((key, idx) => 
+            (newStory = newStory.replace(new RegExp(`{${key}}`,'g'), wordValues[idx])
+            ))
+
+        console.log(mappedStory[mappedStory.length-1])
         setIsShowingStory(true)
-        setStory(`There is a secret swamp hidden in ${noun}, among the living creatures there was
-        a ${adjective} ${noun2}. ${noun2} loves ${color} apples.`)
+        setStoryDisplayed(mappedStory[mappedStory.length-1])
     }
 
     const restartMadlibs = () => {
         setIsShowingStory(false)
-        setStory('')
-
+        setStoryDisplayed('')
+        setBaseStory(null)
     }
 
+    const pickStory = (story) => {
+        setBaseStory(story)
+    }
 
     return (
         <div className="MadLibs">
-            <h1>MadLibs!</h1>
-            {isShowingStory ?
-                <div className="MadLibs-story">
-                    {story}
-                    <div className="MadLibs-story-restart">
-                        <button onClick={restartMadlibs}>Restart</button>
-                    </div>
-                </div>
-                
+            <div>
+                <h1>MadLibs!</h1>
+                {!baseStory ? 
+                    <Stories pickStory={pickStory} />
                 :
-                <MadLibsForm createStory={createStory} />
+                <div>
+                    {!isShowingStory ?
+                        <MadLibsForm createStory={createStory} />
+                        :
+                        <div className="MadLibs-story">
+                            {storyDisplayed}
+                            <div className="MadLibs-story-restart">
+                                <button onClick={restartMadlibs}>Restart</button>
+                            </div>
+                        </div>
+                    }
+                </div>
             }
+            </div>
         </div>
     )
 }
