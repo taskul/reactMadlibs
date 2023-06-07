@@ -1,80 +1,96 @@
-import { useState } from "react";
 import './MadLibsForm.css'
+import { useFormik } from "formik";
+
+
+ // A custom validation function. This must return an object
+ // which keys are symmetrical to our values/initialValues
+const validate = values => {
+    const errors = {};
+    if (!values.noun) {
+        errors.noun = '*Required'
+    }
+    if (!values.noun2) {
+        errors.noun2 = '*Required'
+    }
+    if (!values.adjective) {
+        errors.adjective = '*Required'
+    }
+    if (!values.color) {
+        errors.color = '*Required'
+    }
+
+    return errors;
+};
+
 
 const MadLibsForm = ({createStory}) => {
-    const INITIAL_STATE = {
-        noun: '',
-        noun2: '',
-        adjective: '',
-        color: ''
-    }
-    const [formData, setFormData ] = useState(INITIAL_STATE);
-    const [isInvalid, setIsInvalid] = useState(true);
-    const [isTouched, setIsTouched] = useState(false);
-    const [showError, setShowError] = useState(false);
-    
-    const handleChange = (e) => {
-        setIsTouched(true)
-        const {name, value} = e.target;
-        if (value === '') {
-            setIsInvalid(true)
-        } else {
-            setIsInvalid(false)
-            setShowError(false)
-        }
-        setFormData(data => ({
-            ...data,
-            [name]: value
-        }))
-    }
+    // formik for input validation
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if(isTouched && !isInvalid) {
-            createStory(formData);
-            setFormData(INITIAL_STATE)
-        } else {
-            setShowError(true)
-        }
-    }
+    // Note that we have to initialize ALL of fields with values. These
+    // could come from props, but since we don’t want to prefill this form,
+    // we just use an empty string. If we don’t do this, React will yell
+    // at us.
+    const formik = useFormik({
+        initialValues: {
+            noun: '',
+            noun2: '',
+            adjective: '',
+            color: ''
+        },
+        validate,
+        onSubmit: values => {
+            createStory(values);
+        },
+    });
 
     return (
-        <form onSubmit={handleSubmit} className="MadLibsForm">
+        <form onSubmit={formik.handleSubmit} className="MadLibsForm">
             <input 
                 type="text"
                 id='noun'
                 name='noun'
                 placeholder="noun"
-                value={formData.noun}
-                onChange={handleChange}
+                value={formik.values.noun}
+                onChange={formik.handleChange}
+                // handles displaying errors only after use has interacted with the field
+                onBlur={formik.handleBlur}
             />
+            {formik.errors.noun ? <div className="MadLibsForm-error">{formik.errors.noun}</div> : null}
+            
             <input 
                 type="text"
                 id='noun2'
                 name='noun2'
                 placeholder="noun 2"
-                value={formData.noun2}
-                onChange={handleChange}
+                value={formik.values.noun2}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
             />
+            {formik.errors.noun2 ? <div className="MadLibsForm-error">{formik.errors.noun2}</div> : null}
+
             <input 
                 type="text"
                 id='adjective'
                 name='adjective'
                 placeholder="adjective"
-                value={formData.adjective}
-                onChange={handleChange}
+                value={formik.values.adjective}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
             />
+            {formik.errors.adjective ? <div className="MadLibsForm-error">{formik.errors.adjective}</div> : null}
+
             <input 
                 type="text"
                 id='color'
                 name='color'
                 placeholder="color"
-                value={formData.color}
-                onChange={handleChange}
+                value={formik.values.color}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
             />
-        {isInvalid && isTouched && <p className="MadLibsForm-error">*Fillout all of the  fields</p>}
-        {showError && <p className="MadLibsForm-error">*Fillout all of the  fields</p>}
-        <button>Get Story</button>
+            {formik.errors.color ? <div className="MadLibsForm-error">{formik.errors.color}</div> : null }
+
+        <button type="submit">Get Story</button>
         </form>
     )
 }

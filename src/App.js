@@ -1,9 +1,14 @@
 import React from "react";
 import MadLibs from "./MadLibs/MadLibs";
+import AddCommasDisplay from "./addCommasDisplay";
+import './App.css'
 
 function App() {
   return (
-    <MadLibs />
+    <div className="App">
+      <AddCommasDisplay />
+      <MadLibs />
+    </div>
   );
 }
 
