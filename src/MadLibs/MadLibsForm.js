@@ -30,6 +30,8 @@ const MadLibsForm = ({createStory}) => {
     // could come from props, but since we don’t want to prefill this form,
     // we just use an empty string. If we don’t do this, React will yell
     // at us.
+    // we also pass in validate function with validators
+    // and what to do on form submit
     const formik = useFormik({
         initialValues: {
             noun: '',
@@ -52,7 +54,7 @@ const MadLibsForm = ({createStory}) => {
                 placeholder="noun"
                 value={formik.values.noun}
                 onChange={formik.handleChange}
-                // handles displaying errors only after use has interacted with the field
+                // handles displaying errors only after use has interacted with the field otherwise without it they always display
                 onBlur={formik.handleBlur}
             />
             {formik.errors.noun ? <div className="MadLibsForm-error">{formik.errors.noun}</div> : null}

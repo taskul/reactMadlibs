@@ -10,8 +10,10 @@ const storyList = [
 ]
 
 const Stories = ({pickStory, stories=storyList}) => {
+    // set a story index that we'll use to retrieve a story from an array
     const [storyIdx, setStoryIdx] = useState(0);
 
+    // on change we'll which ever item is selected will be saved as story index
     const handleChange = (e) => {
         setStoryIdx(e.target.value)
     }
@@ -20,12 +22,17 @@ const Stories = ({pickStory, stories=storyList}) => {
         <div>
             <h1>Select a story</h1>
             <select onChange={handleChange}>
+                {/* map over stories array to display all array items as 
+                    options in select input field
+                */}
                 {stories.map((story, idx) => (
                     <option key={idx} value={idx}>
                         {story.name}
                     </option>
                 ))}
             </select>
+            {/* use parent provided function pickStory to select story from the array
+             */}
             <button onClick={() => pickStory(stories[storyIdx].story)}>
                 Select
             </button>
